@@ -1,4 +1,8 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:ringtalk/services/auth_services.dart';
 import 'package:ringtalk/widgets/exportaciones.dart';
 
 class LoginScreen extends StatelessWidget {
@@ -44,6 +48,7 @@ class _Form extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final auth = Provider.of<AuthService>(context);
     return Container(
       margin: const EdgeInsets.only(top: 40),
       padding: const EdgeInsets.symmetric(horizontal: 50),
@@ -66,11 +71,24 @@ class _Form extends StatelessWidget {
             // TextFormField(),
             // TODO: Funcion para  hacer el login
             BtnButton(
-                text: 'Login',
-                onPressed: () {
-                  print(ctrlEmail.text);
-                  print(ctrlPassword.text);
-                })
+              text: 'Login',
+              onPressed: auth.autenticando
+                  ? null
+                  : () async {
+                      FocusScope.of(context).unfocus();
+                      final ok = await auth.login(
+                        ctrlEmail.text.trim(),
+                        ctrlPassword.text.trim(),
+                      );
+                      if (!ok) {
+                        ctrlEmail.clear();
+                        ctrlPassword.clear();
+                      } else {
+                        // TODO: Conectar a nuestro socket
+                        Navigator.pushReplacementNamed(context, 'usuarios');
+                      }
+                    },
+            )
           ],
         ),
       ),

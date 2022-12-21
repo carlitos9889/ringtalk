@@ -1,11 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:ringtalk/helpers/storage.dart';
 import 'package:ringtalk/models/usuario/usuario.dart';
+import 'package:ringtalk/services/auth_services.dart';
 
 class UsuarioScreen extends StatelessWidget {
   const UsuarioScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final auth = Provider.of<AuthService>(context);
     final List<Usuario> usuarios = [
       const Usuario(
           online: true, email: 'email1', nombre: 'nombre 1', uid: '1'),
@@ -21,12 +25,16 @@ class UsuarioScreen extends StatelessWidget {
         elevation: 1,
         backgroundColor: Colors.white,
         centerTitle: true,
-        title: const Text(
-          'Mi nombre',
+        title: Text(
+          auth.usuario?.nombre ?? 'No hay usuario',
           style: TextStyle(color: Colors.black54),
         ),
         leading: IconButton(
-          onPressed: () {},
+          onPressed: () async {
+            // TODO: Desconectar del socket
+            Navigator.pushReplacementNamed(context, 'login');
+            await Storage.logout();
+          },
           icon: const Icon(
             Icons.exit_to_app,
             color: Colors.black87,

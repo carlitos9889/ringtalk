@@ -13,18 +13,18 @@ class BtnButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ElevatedButton(
-      onPressed: () {},
+      onPressed: onPressed,
       style: ElevatedButton.styleFrom(
         elevation: 2,
         shape: const StadiumBorder(),
       ),
-      child: const SizedBox(
+      child: SizedBox(
         width: double.infinity,
         height: 55,
         child: Center(
           child: Text(
-            'Login',
-            style: TextStyle(fontSize: 17),
+            text,
+            style: const TextStyle(fontSize: 17),
           ),
         ),
       ),
