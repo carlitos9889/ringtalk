@@ -3,6 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:ringtalk/services/auth_services.dart';
+import 'package:ringtalk/services/socket_service.dart';
 import 'package:ringtalk/widgets/exportaciones.dart';
 
 class LoginScreen extends StatelessWidget {
@@ -49,6 +50,7 @@ class _Form extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final auth = Provider.of<AuthService>(context);
+    final socket = Provider.of<SocketService>(context);
     return Container(
       margin: const EdgeInsets.only(top: 40),
       padding: const EdgeInsets.symmetric(horizontal: 50),
@@ -84,7 +86,7 @@ class _Form extends StatelessWidget {
                         ctrlEmail.clear();
                         ctrlPassword.clear();
                       } else {
-                        // TODO: Conectar a nuestro socket
+                        socket.connectarClient();
                         Navigator.pushReplacementNamed(context, 'usuarios');
                       }
                     },

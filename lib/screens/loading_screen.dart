@@ -3,6 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:ringtalk/services/auth_services.dart';
+import 'package:ringtalk/services/socket_service.dart';
 
 class LoadingScreen extends StatelessWidget {
   const LoadingScreen({super.key});
@@ -10,9 +11,10 @@ class LoadingScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final auth = Provider.of<AuthService>(context, listen: false);
+    final socket = Provider.of<SocketService>(context, listen: false);
     return Scaffold(
       body: FutureBuilder(
-        future: _checkLoginState(auth, context),
+        future: _checkLoginState(auth, context, socket),
         builder: (BuildContext context, AsyncSnapshot snapshot) {
           return const Center(
             child: Text('Espere...'),
@@ -22,13 +24,16 @@ class LoadingScreen extends StatelessWidget {
     );
   }
 
-  Future _checkLoginState(AuthService auth, BuildContext context) async {
+  Future _checkLoginState(
+      AuthService auth, BuildContext context, SocketService socket) async {
+    socket.connectarClient();
     final autenticado = await auth.isLoggin();
     if (autenticado) {
       // TODO: Animar navegacion
       Navigator.pushReplacementNamed(context, 'usuarios');
     } else {
       // TODO: Animar navegacion
+      socket.disconnectClient();
       Navigator.pushReplacementNamed(context, 'login');
     }
   }
