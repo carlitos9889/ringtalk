@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+
 import 'package:ringtalk/helpers/storage.dart';
+
 import 'package:ringtalk/services/auth_services.dart';
 import 'package:ringtalk/services/socket_service.dart';
+
+import 'package:ringtalk/widgets/exportaciones.dart';
 
 class UsuarioScreen extends StatelessWidget {
   const UsuarioScreen({super.key});
@@ -11,6 +15,7 @@ class UsuarioScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final auth = Provider.of<AuthService>(context);
     final socket = Provider.of<SocketService>(context);
+
     return Scaffold(
       appBar: AppBar(
         elevation: 1,
@@ -40,21 +45,7 @@ class UsuarioScreen extends StatelessWidget {
       ),
       body: ListView.separated(
         physics: const BouncingScrollPhysics(),
-        itemBuilder: (_, i) => ListTile(
-          title: Text(socket.usuarios[i].nombre),
-          leading: CircleAvatar(
-            backgroundColor: Colors.blue[300],
-            child: Text(socket.usuarios[i].nombre.substring(0, 2)),
-          ),
-          trailing: Container(
-            width: 10,
-            height: 10,
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(100),
-              color: socket.usuarios[i].online ? Colors.green[300] : Colors.red,
-            ),
-          ),
-        ),
+        itemBuilder: (_, i) => ListTitleUsuarioConectado(socket.usuarios[i]),
         separatorBuilder: (_, __) => const Divider(height: 1),
         itemCount: socket.usuarios.length,
       ),

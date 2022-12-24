@@ -26,7 +26,7 @@ class LoadingScreen extends StatelessWidget {
 
   Future _checkLoginState(
       AuthService auth, BuildContext context, SocketService socket) async {
-    socket.connectarClient();
+    socket.connectarClient(auth.usuario?.uid ?? 'No id');
     final autenticado = await auth.isLoggin();
     if (autenticado) {
       // TODO: Animar navegacion
@@ -36,5 +36,16 @@ class LoadingScreen extends StatelessWidget {
       socket.disconnectClient();
       Navigator.pushReplacementNamed(context, 'login');
     }
+    // await auth.isLoggin().then(
+    //   (isAutenticado) {
+    //     if (isAutenticado) {
+    //       socket.connectarClient(auth.usuario?.uid ?? "no id");
+    //       Navigator.pushReplacementNamed(context, 'usuarios');
+    //     } else {
+    //       socket.disconnectClient();
+    //       Navigator.pushReplacementNamed(context, 'login');
+    //     }
+    //   },
+    // );
   }
 }

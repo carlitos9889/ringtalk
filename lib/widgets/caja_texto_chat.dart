@@ -26,9 +26,8 @@ class CajaTextoChat extends StatelessWidget {
           child: Row(
             children: [
               Flexible(
-                child: TextField(
+                child: TextFormField(
                   controller: controller,
-                  onSubmitted: onSubmitted,
                   onChanged: onChanged,
                   decoration: const InputDecoration.collapsed(
                     hintText: 'Send SMS',

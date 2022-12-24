@@ -71,7 +71,6 @@ class _Form extends StatelessWidget {
             ),
 
             // TextFormField(),
-            // TODO: Funcion para  hacer el login
             BtnButton(
               text: 'Login',
               onPressed: auth.autenticando
@@ -86,7 +85,7 @@ class _Form extends StatelessWidget {
                         ctrlEmail.clear();
                         ctrlPassword.clear();
                       } else {
-                        socket.connectarClient();
+                        socket.connectarClient(auth.usuario?.uid ?? "no uid");
                         Navigator.pushReplacementNamed(context, 'usuarios');
                       }
                     },

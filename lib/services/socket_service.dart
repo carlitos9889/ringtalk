@@ -1,7 +1,11 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:ringtalk/global/enviroments.dart';
 import 'package:ringtalk/helpers/storage.dart';
 import 'package:ringtalk/models/usuario/usuario.dart';
+import 'package:ringtalk/services/auth_services.dart';
 
 import 'package:socket_io_client/socket_io_client.dart';
 
@@ -11,7 +15,7 @@ enum ServerStatus { Online, Offline, Connecting }
 class SocketService with ChangeNotifier {
   ServerStatus _serverStatus = ServerStatus.Connecting;
   late Socket _socket;
-  final List<Usuario> _usuarios = [];
+  List<Usuario> _usuarios = [];
 
   // Server status
   ServerStatus get serverStatus => _serverStatus;
@@ -23,8 +27,9 @@ class SocketService with ChangeNotifier {
   // usuarios
   List<Usuario> get usuarios => _usuarios;
 
-  void connectarClient() async {
+  void connectarClient(String uid) async {
     final token = await Storage.getToken();
+    // final auth = Provider.of<AuthService>(context, listen: false);
 
     _socket = io(
       Enviroments.socketUrl,
@@ -37,27 +42,24 @@ class SocketService with ChangeNotifier {
     );
 
     _socket.onConnect((_) {
-      print('Cliente conectado');
       _serverStatus = ServerStatus.Online;
       notifyListeners();
     });
     _socket.onDisconnect((_) {
-      print('Clinete desconectado');
       _serverStatus = ServerStatus.Offline;
       notifyListeners();
     });
 
     _socket.on('usuarios', (data) {
       final usuarios = data['usuarios'] as List;
-      for (var usuario in usuarios) {
-        final newUsuario = Usuario.fromJson(usuario);
-        _usuarios.add(newUsuario);
-      }
+      _usuarios = usuarios
+          .map((json) => Usuario.fromJson(json))
+          .where((user) => user.uid != uid)
+          .toList();
       notifyListeners();
     });
 
     _socket.onConnectError((data) {
-      print('ErrorConecting$data');
       _serverStatus = ServerStatus.Connecting;
       notifyListeners();
     });

@@ -91,7 +91,7 @@ class _Form extends StatelessWidget {
                         ctrlPassword.clear();
                         ctrlName.clear();
                       } else {
-                        socket.connectarClient();
+                        socket.connectarClient(auth.usuario?.uid ?? "no uid");
                         Navigator.pushReplacementNamed(context, 'usuarios');
                       }
                     },

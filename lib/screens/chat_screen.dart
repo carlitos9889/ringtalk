@@ -1,4 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:ringtalk/models/message/message.dart';
+import 'package:ringtalk/services/auth_services.dart';
+import 'package:ringtalk/services/chat_service.dart';
+import 'package:ringtalk/services/socket_service.dart';
 import 'package:ringtalk/widgets/exportaciones.dart';
 
 class ChatScreen extends StatefulWidget {
@@ -15,16 +20,58 @@ class _ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin {
 
   final List<ChatMessage> _messages = [];
 
+  late AuthService authService;
+  late ChatService chatService;
+  late SocketService socketService;
+
   @override
   void initState() {
     _ctrl = TextEditingController();
     _focus = FocusNode();
+
+    authService = Provider.of<AuthService>(context, listen: false);
+    chatService = Provider.of<ChatService>(context, listen: false);
+    socketService = Provider.of<SocketService>(context, listen: false);
+    socketService.socket.on('mensaje-personal', _listenMensaje);
+    _cargarHistorial(chatService.usuarioPara?.uid ?? 'No id');
     super.initState();
+  }
+
+  Future _cargarHistorial(String uid) async {
+    List<Message> chat = await chatService.getChat(uid);
+    final historial = chat
+        .map(
+          (m) => ChatMessage(
+            texto: m.mensaje,
+            uid: m.de,
+            animationController: AnimationController(
+              vsync: this,
+              duration: const Duration(milliseconds: 300),
+            )..forward(),
+          ),
+        )
+        .toList();
+    setState(() {
+      _messages.insertAll(0, historial);
+    });
+  }
+
+  void _listenMensaje(dynamic data) {
+    final message = ChatMessage(
+      texto: data['mensaje'],
+      uid: data['de'],
+      animationController: AnimationController(
+        vsync: this,
+        duration: const Duration(milliseconds: 300),
+      ),
+    )..animationController.forward();
+    setState(() {
+      _messages.insert(0, message);
+    });
   }
 
   @override
   void dispose() {
-    // TODO: off socket
     _ctrl.dispose();
     _focus.dispose();
     for (var message in _messages) {
@@ -40,9 +87,9 @@ class _ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin {
         elevation: 1,
         backgroundColor: Colors.white,
         centerTitle: true,
-        title: const Text(
-          'Mi nombre',
-          style: TextStyle(color: Colors.black54),
+        title: Text(
+          chatService.usuarioPara?.nombre ?? 'Sin nombre',
+          style: const TextStyle(color: Colors.black54),
         ),
       ),
       body: Column(
@@ -56,7 +103,6 @@ class _ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin {
             ),
           ),
           const Divider(height: 1),
-          // TODO: Caja de texto
           CajaTextoChat(
             controller: _ctrl,
             focusNode: _focus,
@@ -87,13 +133,19 @@ class _ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin {
         0,
         ChatMessage(
           texto: texto,
-          uid: '123',
+          uid: authService.usuario?.uid ?? "no uid",
           animationController: AnimationController(
             vsync: this,
             duration: const Duration(milliseconds: 400),
           ),
         )..animationController.forward(),
       );
+
+      socketService.emit('mensaje-personal', {
+        'de': authService.usuario?.uid ?? 'no-uid',
+        'para': chatService.usuarioPara?.uid ?? 'no uid',
+        'mensaje': texto
+      });
     });
   }
 }
