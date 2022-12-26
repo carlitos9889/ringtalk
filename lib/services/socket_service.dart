@@ -1,11 +1,9 @@
 // ignore_for_file: use_build_context_synchronously
 
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:ringtalk/global/enviroments.dart';
 import 'package:ringtalk/helpers/storage.dart';
 import 'package:ringtalk/models/usuario/usuario.dart';
-import 'package:ringtalk/services/auth_services.dart';
 
 import 'package:socket_io_client/socket_io_client.dart';
 

@@ -1,7 +1,9 @@
 // ignore_for_file: use_build_context_synchronously
 
 import 'package:flutter/material.dart';
+import 'package:page_transition/page_transition.dart';
 import 'package:provider/provider.dart';
+import 'package:ringtalk/screens/usuarios_screen.dart';
 import 'package:ringtalk/services/auth_services.dart';
 import 'package:ringtalk/services/socket_service.dart';
 import 'package:ringtalk/widgets/exportaciones.dart';
@@ -86,7 +88,13 @@ class _Form extends StatelessWidget {
                         ctrlPassword.clear();
                       } else {
                         socket.connectarClient(auth.usuario?.uid ?? "no uid");
-                        Navigator.pushReplacementNamed(context, 'usuarios');
+                        Navigator.pushReplacement(
+                          context,
+                          PageTransition(
+                            child: const UsuarioScreen(),
+                            type: PageTransitionType.leftToRight,
+                          ),
+                        );
                       }
                     },
             )

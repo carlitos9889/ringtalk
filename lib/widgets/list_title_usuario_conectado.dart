@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:page_transition/page_transition.dart';
 import 'package:provider/provider.dart';
 import 'package:ringtalk/models/usuario/usuario.dart';
+import 'package:ringtalk/screens/chat_screen.dart';
 import 'package:ringtalk/services/chat_service.dart';
 
 class ListTitleUsuarioConectado extends StatelessWidget {
@@ -28,7 +30,13 @@ class ListTitleUsuarioConectado extends StatelessWidget {
       ),
       onTap: () {
         chatService.usuarioPara = usuario;
-        Navigator.pushNamed(context, 'chat');
+        Navigator.push(
+          context,
+          PageTransition(
+            child: const ChatScreen(),
+            type: PageTransitionType.leftToRight,
+          ),
+        );
       },
     );
   }

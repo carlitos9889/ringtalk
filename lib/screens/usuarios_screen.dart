@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:page_transition/page_transition.dart';
 import 'package:provider/provider.dart';
 
 import 'package:ringtalk/helpers/storage.dart';
+import 'package:ringtalk/screens/login_screen.dart';
 
 import 'package:ringtalk/services/auth_services.dart';
 import 'package:ringtalk/services/socket_service.dart';
@@ -28,7 +30,13 @@ class UsuarioScreen extends StatelessWidget {
         leading: IconButton(
           onPressed: () {
             socket.disconnectClient();
-            Navigator.pushReplacementNamed(context, 'login');
+            Navigator.pushReplacement(
+              context,
+              PageTransition(
+                child: const LoginScreen(),
+                type: PageTransitionType.leftToRight,
+              ),
+            );
             Storage.logout();
           },
           icon: const Icon(Icons.exit_to_app, color: Colors.black87),
@@ -39,7 +47,6 @@ class UsuarioScreen extends StatelessWidget {
             child: socket.serverStatus == ServerStatus.Online
                 ? Icon(Icons.check_circle, color: Colors.blue[400])
                 : Icon(Icons.offline_bolt, color: Colors.red[400]),
-            // child: Icon(Icons.offline_bolt, color: Colors.red[400]),
           ),
         ],
       ),
