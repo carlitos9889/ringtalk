@@ -32,7 +32,7 @@ class _ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin {
     authService = Provider.of<AuthService>(context, listen: false);
     chatService = Provider.of<ChatService>(context, listen: false);
     socketService = Provider.of<SocketService>(context, listen: false);
-    socketService.socket.on('mensaje-personal', _listenMensaje);
+    socketService.socket?.on('mensaje-personal', _listenMensaje);
     _cargarHistorial(chatService.usuarioPara?.uid ?? 'No id');
     super.initState();
   }

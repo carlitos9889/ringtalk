@@ -1,5 +1,3 @@
-// ignore_for_file: use_build_context_synchronously
-
 import 'package:flutter/material.dart';
 import 'package:ringtalk/global/enviroments.dart';
 import 'package:ringtalk/helpers/storage.dart';
@@ -12,21 +10,21 @@ enum ServerStatus { Online, Offline, Connecting }
 
 class SocketService with ChangeNotifier {
   ServerStatus _serverStatus = ServerStatus.Connecting;
-  late Socket _socket;
+  Socket? _socket;
   List<Usuario> _usuarios = [];
 
   // Server status
   ServerStatus get serverStatus => _serverStatus;
 
   // socket
-  Socket get socket => _socket;
-  Function get emit => _socket.emit;
+  Socket? get socket => _socket;
+  Function get emit => _socket?.emit ?? () {};
 
   // usuarios
   List<Usuario> get usuarios => _usuarios;
 
   void connectarClient(String uid) async {
-    final token = await Storage.getToken();
+    // final token = await Storage.getToken();
     // final auth = Provider.of<AuthService>(context, listen: false);
 
     _socket = io(
@@ -35,20 +33,20 @@ class SocketService with ChangeNotifier {
           .setTransports(['websocket'])
           .enableAutoConnect()
           .enableForceNew()
-          .setExtraHeaders({'x-token': token})
+          .setExtraHeaders({'x-token': await Storage.getToken()})
           .build(),
     );
 
-    _socket.onConnect((_) {
+    _socket?.onConnect((_) {
       _serverStatus = ServerStatus.Online;
       notifyListeners();
     });
-    _socket.onDisconnect((_) {
+    _socket?.onDisconnect((_) {
       _serverStatus = ServerStatus.Offline;
       notifyListeners();
     });
 
-    _socket.on('usuarios', (data) {
+    _socket?.on('usuarios', (data) {
       final usuarios = data['usuarios'] as List;
       _usuarios = usuarios
           .map((json) => Usuario.fromJson(json))
@@ -57,14 +55,14 @@ class SocketService with ChangeNotifier {
       notifyListeners();
     });
 
-    _socket.onConnectError((data) {
+    _socket?.onConnectError((data) {
       _serverStatus = ServerStatus.Connecting;
       notifyListeners();
     });
   }
 
   void disconnectClient() {
-    _socket.disconnect();
+    _socket?.disconnect();
     _usuarios.clear();
   }
 }
