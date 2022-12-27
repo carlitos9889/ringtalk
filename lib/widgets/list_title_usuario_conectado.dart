@@ -21,10 +21,7 @@ class ListTitleUsuarioConectado extends StatelessWidget {
       trailing: Container(
         width: 30,
         height: 30,
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(100),
-          color: Colors.blue[200],
-        ),
+        decoration: _decoration(),
         child: const Align(
           alignment: Alignment.center,
           child: Text('10', style: TextStyle(color: Colors.white)),
@@ -40,6 +37,13 @@ class ListTitleUsuarioConectado extends StatelessWidget {
           ),
         );
       },
+    );
+  }
+
+  BoxDecoration _decoration() {
+    return BoxDecoration(
+      borderRadius: BorderRadius.circular(100),
+      color: Colors.deepOrangeAccent,
     );
   }
 }
