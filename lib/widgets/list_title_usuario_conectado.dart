@@ -22,7 +22,9 @@ class ListTitleUsuarioConectado extends StatelessWidget {
         width: 30,
         height: 30,
         decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(100), color: Colors.lightGreen),
+          borderRadius: BorderRadius.circular(100),
+          color: Colors.blue[200],
+        ),
         child: const Align(
           alignment: Alignment.center,
           child: Text('10', style: TextStyle(color: Colors.white)),
