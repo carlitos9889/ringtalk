@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:ringtalk/models/usuario/usuario.dart';
 import 'package:ringtalk/screens/chat_screen.dart';
 import 'package:ringtalk/services/chat_service.dart';
+import 'package:ringtalk/widgets/leading_chat.dart';
 
 class ListTitleUsuarioConectado extends StatelessWidget {
   const ListTitleUsuarioConectado(this.usuario, {Key? key}) : super(key: key);
@@ -16,16 +17,17 @@ class ListTitleUsuarioConectado extends StatelessWidget {
 
     return ListTile(
       title: Text(usuario.nombre),
-      leading: CircleAvatar(
-        backgroundColor: Colors.blue[300],
-        child: Text(usuario.nombre.substring(0, 2)),
-      ),
+      leading: LeadingChat(usuario: usuario),
       trailing: Container(
-        width: 10,
-        height: 10,
+        width: 30,
+        height: 30,
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(100),
           color: usuario.online ? Colors.green[300] : Colors.red,
+        ),
+        child: const Align(
+          alignment: Alignment.center,
+          child: Text('10', style: TextStyle(color: Colors.white)),
         ),
       ),
       onTap: () {
